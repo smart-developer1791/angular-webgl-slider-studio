@@ -1,0 +1,44 @@
+<div class="flex h-full w-full flex-col md:w-[380px]">
+  <header class="flex items-center gap-3 border-b border-white/[0.06] px-5 py-4">
+    <span
+      class="grid size-8 place-items-center rounded-lg"
+      style="background: var(--ui-accent); color: var(--ui-on-accent)"
+    >
+      <svg lucideIcon="layers" class="size-4" [strokeWidth]="2"></svg>
+    </span>
+    <div class="flex-1">
+      <p class="text-[13.5px] font-semibold tracking-tight text-white">Shader Slider</p>
+      <p class="flex items-center gap-1.5 font-mono text-[10.5px] text-white/40">
+        <span
+          class="size-1.5 rounded-full"
+          [class]="studio.webgl() ? 'bg-[#3dff9e]' : 'bg-[#ffb14a]'"
+        ></span>
+        {{ studio.webgl() ? 'WebGL2 · studio' : 'WebGL unavailable — CSS mode' }}
+      </p>
+    </div>
+    <button
+      type="button"
+      aria-label="Hide panel"
+      class="grid size-8 place-items-center rounded-lg text-white/50 transition hover:bg-white/[0.08] hover:text-white"
+      (click)="close.emit()"
+    >
+      <svg lucideIcon="x" class="size-4"></svg>
+    </button>
+  </header>
+  <div class="panel-scroll flex-1 overflow-y-auto overscroll-contain">
+    <studio-slides></studio-slides>
+    <studio-transition></studio-transition>
+    <studio-playback></studio-playback>
+    <studio-appearance></studio-appearance>
+    <studio-presets></studio-presets>
+    <studio-data></studio-data>
+  </div>
+  <footer
+    class="flex items-center justify-between border-t border-white/[0.06] px-5 py-3 font-mono text-[10.5px] text-white/35"
+  >
+    <span>Autosave</span>
+    <span
+      ><kbd class="rounded border border-white/15 px-1 py-px text-white/60">H</kbd> hide panel</span
+    >
+  </footer>
+</div>

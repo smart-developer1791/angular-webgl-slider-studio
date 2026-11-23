@@ -1,0 +1,35 @@
+{
+  "name": "angular-webgl-slider-studio",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "ng serve",
+    "build": "ng build",
+    "preview": "ng serve --configuration production"
+  },
+  "private": true,
+  "packageManager": "npm@11.21.2",
+  "dependencies": {
+    "@angular/common": "^21.2.0",
+    "@angular/compiler": "^21.2.0",
+    "@angular/core": "^21.2.0",
+    "@angular/platform-browser": "^21.2.0",
+    "rxjs": "~7.8.0",
+    "tslib": "^2.3.0",
+    "@lucide/angular": "1.62.0"
+  },
+  "devDependencies": {
+    "@angular/build": "^21.2.30",
+    "@angular/cli": "^21.2.30",
+    "@angular/compiler-cli": "^21.2.0",
+    "prettier": "^3.8.1",
+    "typescript": "~5.9.2",
+    "tailwindcss": "4.2.2",
+    "@tailwindcss/postcss": "4.2.2",
+    "postcss": "^8.5.10"
+  },
+  "description": "The Angular implementation of Shader Slider Studio with WebGL2 transitions, live settings, and browser-local presets.",
+  "license": "MIT",
+  "engines": {
+    "node": "^22.12.0 || >=24.0.0"
+  }
+}

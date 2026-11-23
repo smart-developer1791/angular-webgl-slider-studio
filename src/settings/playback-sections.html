@@ -1,0 +1,141 @@
+<section studioSection icon="clapperboard" heading="Cinematic effects" defaultOpen>
+  <label
+    studioRange
+    label="Ken Burns — slow zoom"
+    [value]="fx().kenBurns"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('fx', { kenBurns: $event })"
+  ></label>
+  <label
+    studioRange
+    label="Depth parallax"
+    [value]="fx().parallax"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('fx', { parallax: $event })"
+  ></label>
+  <label
+    studioRange
+    label="Ambient motion"
+    [value]="fx().ambient"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('fx', { ambient: $event })"
+  ></label>
+  <label
+    studioRange
+    label="Lens aberration"
+    [value]="fx().chroma"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('fx', { chroma: $event })"
+  ></label>
+  <button
+    studioToggle
+    label="Custom cursor"
+    hint="A Drag ring that shrinks over buttons"
+    [checked]="fx().cursor"
+    (checkedChange)="studio.patch('fx', { cursor: $event })"
+  ></button>
+</section>
+<section studioSection icon="mouse-pointer-2" heading="Interaction">
+  <button
+    studioToggle
+    label="Cursor distortion"
+    hint="Lens and RGB shift driven by pointer speed"
+    [checked]="interaction().hover"
+    (checkedChange)="studio.patch('interaction', { hover: $event })"
+  ></button>
+  @if (interaction().hover) {
+    <label
+      studioRange
+      label="Strength"
+      [value]="interaction().hoverStrength"
+      [min]="0"
+      [max]="2"
+      [step]="0.01"
+      [format]="percent"
+      (valueChange)="studio.patch('interaction', { hoverStrength: $event })"
+    ></label>
+    <label
+      studioRange
+      label="Radius"
+      [value]="interaction().hoverRadius"
+      [min]="0.05"
+      [max]="1"
+      [step]="0.01"
+      [format]="decimal"
+      (valueChange)="studio.patch('interaction', { hoverRadius: $event })"
+    ></label>
+  }
+  <button
+    studioToggle
+    label="Drag and swipe"
+    hint="The transition follows your finger with inertia"
+    [checked]="interaction().drag"
+    (checkedChange)="studio.patch('interaction', { drag: $event })"
+  ></button>
+  @if (interaction().drag) {
+    <label
+      studioRange
+      label="Sensitivity"
+      [value]="interaction().dragSensitivity"
+      [min]="0.3"
+      [max]="3"
+      [step]="0.05"
+      [format]="multiplier"
+      (valueChange)="studio.patch('interaction', { dragSensitivity: $event })"
+    ></label>
+  }
+  <button
+    studioToggle
+    label="Mouse wheel and trackpad"
+    [checked]="interaction().wheel"
+    (checkedChange)="studio.patch('interaction', { wheel: $event })"
+  ></button>
+  <button
+    studioToggle
+    label="Arrow keys ← →"
+    [checked]="interaction().keyboard"
+    (checkedChange)="studio.patch('interaction', { keyboard: $event })"
+  ></button>
+  <button
+    studioToggle
+    label="Infinite loop"
+    [checked]="interaction().loop"
+    (checkedChange)="studio.patch('interaction', { loop: $event })"
+  ></button>
+</section>
+<section studioSection icon="timer" heading="Autoplay" [aside]="autoplay().enabled ? 'on' : 'off'">
+  <button
+    studioToggle
+    label="Enable autoplay"
+    [checked]="autoplay().enabled"
+    (checkedChange)="studio.patch('autoplay', { enabled: $event })"
+  ></button>
+  <label
+    studioRange
+    label="Interval"
+    [value]="autoplay().interval"
+    [min]="1500"
+    [max]="12000"
+    [step]="250"
+    [format]="seconds"
+    (valueChange)="studio.patch('autoplay', { interval: $event })"
+  ></label>
+  <button
+    studioToggle
+    label="Pause on hover"
+    [checked]="autoplay().pauseOnHover"
+    (checkedChange)="studio.patch('autoplay', { pauseOnHover: $event })"
+  ></button>
+</section>

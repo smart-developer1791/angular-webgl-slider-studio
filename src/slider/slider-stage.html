@@ -1,0 +1,132 @@
+<canvas #canvas class="absolute inset-0 block h-full w-full"></canvas>
+@if (!studio.webgl()) {
+  @for (url of studio.urls(); track $index; let index = $index) {
+    @if (url) {
+      <img
+        [src]="url"
+        alt=""
+        draggable="false"
+        class="absolute inset-0 size-full object-cover transition-opacity duration-700"
+        [style.opacity]="index === studio.active() ? 1 : 0"
+      />
+    }
+  }
+}
+<div class="pointer-events-none absolute inset-0" [style.background]="overlay()"></div>
+@if (count() === 0) {
+  <div class="absolute inset-0 grid place-items-center p-8 text-center">
+    <div class="flex max-w-xs flex-col items-center gap-4 text-white/60">
+      <span class="grid size-14 place-items-center rounded-2xl border border-white/10 bg-white/5"
+        ><svg lucideIcon="image-plus" class="size-6"></svg
+      ></span>
+      <p class="text-sm leading-relaxed">
+        No slides yet. Add images in the Slides section of the panel.
+      </p>
+    </div>
+  </div>
+} @else {
+  <div data-parallax class="pointer-events-none absolute inset-0 will-change-transform">
+    @for (item of captions(); track item.key) {
+      @if (config().slides[item.index]; as slide) {
+        <div
+          studioCaption
+          [slide]="slide"
+          [appearance]="look()"
+          [delay]="item.delay"
+          [leaving]="item.leaving"
+        ></div>
+      }
+    }
+  </div>
+}
+@if (look().counter && count() > 0) {
+  <div
+    class="pointer-events-none absolute top-6 left-6 flex items-baseline gap-2 font-mono text-white md:top-9 md:left-[5.5cqw]"
+  >
+    <span class="text-sm">{{ pad(studio.active() + 1) }}</span>
+    <span class="h-px w-6 self-center bg-white/40"></span>
+    <span class="text-[11px] text-white/50">{{ pad(count()) }}</span>
+  </div>
+}
+@if (look().indicator !== 'none' && count() > 1) {
+  <div data-no-drag class="absolute bottom-6 left-6 flex items-center md:bottom-9 md:left-[5.5cqw]">
+    @if (look().indicator === 'progress') {
+      <div class="flex w-[min(42cqw,22rem)] gap-1.5">
+        @for (n of slideNumbers(); track n) {
+          <button
+            type="button"
+            [attr.aria-label]="'Slide ' + n"
+            class="group flex-1 py-3"
+            (click)="studio.engine()?.goTo(n - 1)"
+          >
+            <span
+              class="block h-[2px] overflow-hidden rounded-full bg-white/25 transition-colors group-hover:bg-white/50"
+            >
+              <span
+                class="block h-full origin-left"
+                [attr.data-active-fill]="n - 1 === studio.active() && autoplay() ? '' : null"
+                [style.background]="look().accent"
+                [style.transform]="
+                  n - 1 === studio.active() && !autoplay() ? 'scaleX(1)' : 'scaleX(0)'
+                "
+              ></span>
+            </span>
+          </button>
+        }
+      </div>
+    } @else {
+      <div class="flex items-center gap-2">
+        @for (n of slideNumbers(); track n) {
+          <button
+            type="button"
+            [attr.aria-label]="'Slide ' + n"
+            class="relative h-2 overflow-hidden rounded-full bg-white/30 transition-[width,background-color] duration-500 hover:bg-white/60"
+            [style.width]="n - 1 === studio.active() ? '36px' : '8px'"
+            (click)="studio.engine()?.goTo(n - 1)"
+          >
+            @if (n - 1 === studio.active()) {
+              <span
+                [attr.data-active-fill]="autoplay() ? '' : null"
+                class="absolute inset-0 origin-left"
+                [style.background]="look().accent"
+                [style.transform]="autoplay() ? 'scaleX(0)' : 'scaleX(1)'"
+              ></span>
+            }
+          </button>
+        }
+      </div>
+    }
+  </div>
+}
+@if (look().arrows && count() > 1) {
+  <div data-no-drag class="absolute right-6 bottom-6 flex gap-2 md:right-[5.5cqw] md:bottom-9">
+    @for (arrow of arrows; track arrow.label) {
+      <button
+        type="button"
+        [attr.aria-label]="arrow.label"
+        [disabled]="!arrow.enabled()"
+        class="grid size-12 place-items-center rounded-full border border-white/20 bg-black/15 text-white backdrop-blur-md transition hover:border-transparent hover:bg-white hover:text-black disabled:pointer-events-none disabled:opacity-30"
+        (click)="arrow.run()"
+      >
+        <svg [lucideIcon]="arrow.icon" class="size-[18px]" [strokeWidth]="1.75"></svg>
+      </button>
+    }
+  </div>
+}
+@if (config().fx.cursor) {
+  <div
+    data-cursor
+    data-state="idle"
+    aria-hidden="true"
+    class="custom-cursor pointer-events-none absolute top-0 left-0 z-30"
+    style="opacity: 0"
+  >
+    <div class="cursor-ring">
+      @if (drag()) {
+        <svg lucideIcon="chevron-left" class="size-3" [strokeWidth]="2.5"></svg>
+        <span>Drag</span>
+        <svg lucideIcon="chevron-right" class="size-3" [strokeWidth]="2.5"></svg>
+      }
+    </div>
+  </div>
+}

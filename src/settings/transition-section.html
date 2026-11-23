@@ -1,0 +1,108 @@
+<section studioSection icon="wand-sparkles" heading="Transition" defaultOpen>
+  <div class="grid grid-cols-2 gap-1.5">
+    @for (id of effectIds; track id) {
+      <button
+        type="button"
+        class="rounded-lg border px-3 py-2.5 text-left transition-colors"
+        [class]="
+          id === transition().effect
+            ? 'bg-white/[0.06]'
+            : 'border-white/[0.06] hover:border-white/15 hover:bg-white/[0.025]'
+        "
+        [style.border-color]="id === transition().effect ? 'var(--ui-accent)' : null"
+        (click)="chooseEffect(id)"
+      >
+        <span class="block text-[12.5px] font-semibold text-white/90">{{ effects[id].name }}</span>
+        <span class="mt-0.5 block text-[10.5px] leading-snug text-white/40">{{
+          effects[id].description
+        }}</span>
+      </button>
+    }
+  </div>
+  <button
+    studioToggle
+    label="Random effect"
+    hint="A new effect for each transition, with no consecutive repeats"
+    [checked]="transition().random"
+    (checkedChange)="studio.patch('transition', { random: $event })"
+  ></button>
+  <button
+    studioButton
+    variant="primary"
+    icon="play"
+    class="w-full"
+    [disabled]="studio.config().slides.length < 2"
+    (click)="studio.engine()?.replay()"
+  >
+    Play transition
+  </button>
+  <label
+    studioRange
+    label="Duration"
+    [value]="transition().duration"
+    [min]="300"
+    [max]="3000"
+    [step]="50"
+    [format]="seconds"
+    (valueChange)="studio.patch('transition', { duration: $event })"
+  ></label>
+  <label
+    studioSelect
+    label="Easing curve"
+    [value]="transition().easing"
+    [options]="easingOptions"
+    (valueChange)="studio.patch('transition', { easing: $event })"
+  ></label>
+  <label
+    studioRange
+    label="Intensity"
+    [value]="transition().intensity"
+    [min]="0"
+    [max]="2"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('transition', { intensity: $event })"
+  ></label>
+  <div class="space-y-5 rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+    <p class="font-mono text-[10px] tracking-[0.18em] text-white/40 uppercase">
+      Parameters · {{ effect().name }}
+    </p>
+    @for (param of fields(); track param.label; let i = $index) {
+      @if (param.choices; as options) {
+        <div
+          studioSegmented
+          [label]="param.label"
+          [value]="params()[i]"
+          [options]="options"
+          (valueChange)="setParam(i, $event)"
+        ></div>
+      } @else {
+        <label
+          studioRange
+          [label]="param.label"
+          [value]="params()[i]"
+          [min]="param.min"
+          [max]="param.max"
+          [step]="param.step"
+          [format]="param.format"
+          (valueChange)="setParam(i, $event)"
+        ></label>
+      }
+    }
+    @if (transition().effect === 'dissolve') {
+      <div
+        studioColor
+        label="Edge color"
+        [value]="transition().edgeColor"
+        (valueChange)="studio.patch('transition', { edgeColor: $event })"
+      ></div>
+    }
+    <button
+      type="button"
+      class="text-[11px] text-white/40 underline-offset-2 hover:text-white/70 hover:underline"
+      (click)="resetParams()"
+    >
+      Reset effect parameters
+    </button>
+  </div>
+</section>

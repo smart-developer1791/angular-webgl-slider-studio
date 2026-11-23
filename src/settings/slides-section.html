@@ -1,0 +1,173 @@
+<section studioSection icon="images" heading="Slides" defaultOpen [aside]="slides().length">
+  @if (slides().length) {
+    <ul class="space-y-1.5">
+      @for (slide of slides(); track slide.id; let i = $index) {
+        <li
+          draggable="true"
+          class="rounded-xl border transition-colors"
+          [class.opacity-40]="dragFrom() === i"
+          [class]="
+            i === studio.active()
+              ? 'bg-white/[0.045]'
+              : 'border-white/[0.06] hover:border-white/[0.12]'
+          "
+          [style.border-color]="
+            i === studio.active() ? 'color-mix(in srgb, var(--ui-accent) 55%, transparent)' : null
+          "
+          (dragstart)="startDrag($event, i)"
+          (dragover)="dragFrom() !== null && $event.preventDefault()"
+          (drop)="dropSlide($event, i)"
+          (dragend)="dragFrom.set(null)"
+        >
+          <div class="flex items-center gap-2.5 p-2">
+            <svg
+              lucideIcon="grip-vertical"
+              class="size-3.5 shrink-0 cursor-grab text-white/20"
+            ></svg>
+            <button
+              type="button"
+              title="Show slide"
+              class="relative h-11 w-16 shrink-0 overflow-hidden rounded-md bg-white/5"
+              (click)="studio.engine()?.goTo(i)"
+            >
+              @if (studio.urls()[i] && status(i) !== 'error') {
+                <img
+                  [src]="studio.urls()[i]"
+                  alt=""
+                  draggable="false"
+                  class="size-full object-cover"
+                />
+              }
+              @if (status(i) === 'error') {
+                <span
+                  class="absolute inset-0 grid place-items-center bg-[#ff5a5a]/15 text-[#ff8c8c]"
+                  ><svg lucideIcon="image-off" class="size-4"></svg
+                ></span>
+              }
+              <span
+                class="absolute top-1 left-1 rounded bg-black/55 px-1 font-mono text-[9px] text-white"
+                >{{ i + 1 }}</span
+              >
+            </button>
+            <div class="min-w-0 flex-1">
+              <p class="truncate text-[13px] font-medium text-white/90">
+                {{ slide.title || 'Untitled' }}
+              </p>
+              <p
+                class="truncate text-[11px]"
+                [class]="status(i) === 'error' ? 'text-[#ff8c8c]' : 'text-white/40'"
+              >
+                {{
+                  status(i) === 'error'
+                    ? 'Image failed to load'
+                    : slide.effect === 'inherit'
+                      ? 'Global effect'
+                      : effects[slide.effect].name
+                }}
+              </p>
+            </div>
+            <div class="flex shrink-0">
+              <button
+                studioIconButton
+                icon="chevron-up"
+                label="Move up"
+                [disabled]="i === 0"
+                (click)="move(i, i - 1)"
+              ></button>
+              <button
+                studioIconButton
+                icon="chevron-down"
+                label="Move down"
+                [disabled]="i === slides().length - 1"
+                (click)="move(i, i + 1)"
+              ></button>
+              <button
+                studioIconButton
+                icon="pencil"
+                label="Edit"
+                [attr.aria-expanded]="expanded() === slide.id"
+                (click)="toggleSlide(slide.id)"
+              ></button>
+              <button studioIconButton icon="trash" label="Delete" (click)="remove(slide)"></button>
+            </div>
+          </div>
+          @if (expanded() === slide.id) {
+            <div class="space-y-3.5 border-t border-white/[0.06] p-3">
+              <label
+                studioText
+                label="Title"
+                [value]="slide.title"
+                (valueChange)="updateSlide(slide.id, { title: $event })"
+              ></label>
+              <label
+                studioText
+                label="Subtitle"
+                multiline
+                [value]="slide.subtitle"
+                (valueChange)="updateSlide(slide.id, { subtitle: $event })"
+              ></label>
+              <div class="grid grid-cols-2 gap-2">
+                <label
+                  studioText
+                  label="Button text"
+                  [value]="slide.buttonText"
+                  placeholder="Leave empty to hide"
+                  (valueChange)="updateSlide(slide.id, { buttonText: $event })"
+                ></label>
+                <label
+                  studioText
+                  label="Link"
+                  [value]="slide.buttonUrl"
+                  placeholder="https://"
+                  (valueChange)="updateSlide(slide.id, { buttonUrl: $event })"
+                ></label>
+              </div>
+              <label
+                studioSelect
+                label="Transition into this slide"
+                [value]="slide.effect"
+                [options]="effectOptions"
+                (valueChange)="updateSlide(slide.id, { effect: $event })"
+              ></label>
+            </div>
+          }
+        </li>
+      }
+    </ul>
+  }
+  <button
+    type="button"
+    class="flex w-full flex-col items-center gap-1.5 rounded-xl border border-dashed px-4 py-5 text-center transition-colors"
+    [class]="
+      dropOver()
+        ? 'bg-white/[0.06]'
+        : 'border-white/15 hover:border-white/30 hover:bg-white/[0.025]'
+    "
+    [style.border-color]="dropOver() ? 'var(--ui-accent)' : null"
+    (click)="fileInput.click()"
+    (dragover)="hoverFiles($event)"
+    (dragleave)="dropOver.set(false)"
+    (drop)="dropFiles($event)"
+  >
+    <svg lucideIcon="image-plus" class="size-5 text-white/50" [strokeWidth]="1.75"></svg>
+    <span class="text-[12.5px] font-medium text-white/80">Drop images or choose files</span>
+    <span class="text-[11px] text-white/35">JPG, PNG, WebP — stored in this browser</span>
+  </button>
+  <input #fileInput type="file" accept="image/*" multiple hidden (change)="onFiles(fileInput)" />
+  <form class="flex gap-2" (submit)="addUrl($event)">
+    <div class="relative flex-1">
+      <svg
+        lucideIcon="link-2"
+        class="pointer-events-none absolute top-1/2 left-2.5 size-3.5 -translate-y-1/2 text-white/35"
+      ></svg>
+      <input
+        #imageUrl
+        [value]="url()"
+        (input)="url.set(imageUrl.value)"
+        placeholder="Image URL"
+        class="field pl-8"
+      />
+    </div>
+    <button studioButton [type]="'submit'" [disabled]="!url().trim()">Add</button>
+  </form>
+</section>

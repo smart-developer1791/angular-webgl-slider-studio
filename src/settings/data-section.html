@@ -1,0 +1,22 @@
+<section studioSection icon="database" heading="Data">
+  <p class="text-[11.5px] leading-relaxed text-white/45">
+    Settings are saved automatically in this browser. Export creates a JSON file including uploaded
+    images.
+  </p>
+  <div class="grid grid-cols-2 gap-2">
+    <button studioButton icon="download" [disabled]="busy()" (click)="doExport()">Export</button>
+    <button studioButton icon="upload" [disabled]="busy()" (click)="fileInput.click()">
+      Import
+    </button>
+  </div>
+  <input
+    #fileInput
+    type="file"
+    accept="application/json,.json"
+    hidden
+    (change)="doImport(fileInput)"
+  />
+  <button studioButton variant="danger" icon="rotate-ccw" class="w-full" (click)="reset()">
+    Reset all
+  </button>
+</section>

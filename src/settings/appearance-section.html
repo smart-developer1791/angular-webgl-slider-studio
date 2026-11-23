@@ -1,0 +1,96 @@
+<section studioSection icon="palette" heading="Appearance">
+  <div
+    studioSegmented
+    label="Heading font"
+    [value]="look().font"
+    [options]="fonts"
+    (valueChange)="studio.patch('appearance', { font: $event })"
+  ></div>
+  <div
+    studioSegmented
+    label="Text entrance"
+    [value]="look().textAnimation"
+    [options]="animations"
+    (valueChange)="studio.patch('appearance', { textAnimation: $event })"
+  ></div>
+  <div
+    studioSegmented
+    label="Text position"
+    [value]="look().textPosition"
+    [options]="positions"
+    (valueChange)="studio.patch('appearance', { textPosition: $event })"
+  ></div>
+  <label
+    studioRange
+    label="Text size"
+    [value]="look().textScale"
+    [min]="0.5"
+    [max]="1.6"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('appearance', { textScale: $event })"
+  ></label>
+  <div class="grid grid-cols-2 gap-3">
+    <div
+      studioColor
+      label="Text color"
+      [value]="look().textColor"
+      (valueChange)="studio.patch('appearance', { textColor: $event })"
+    ></div>
+    <div
+      studioColor
+      label="Accent"
+      [value]="look().accent"
+      (valueChange)="studio.patch('appearance', { accent: $event })"
+    ></div>
+  </div>
+  <label
+    studioRange
+    label="Text backdrop"
+    [value]="look().overlay"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('appearance', { overlay: $event })"
+  ></label>
+  <label
+    studioRange
+    label="Film grain"
+    [value]="look().grain"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('appearance', { grain: $event })"
+  ></label>
+  <label
+    studioRange
+    label="Vignette"
+    [value]="look().vignette"
+    [min]="0"
+    [max]="1"
+    [step]="0.01"
+    [format]="percent"
+    (valueChange)="studio.patch('appearance', { vignette: $event })"
+  ></label>
+  <div
+    studioSegmented
+    label="Indicator"
+    [value]="look().indicator"
+    [options]="indicators"
+    (valueChange)="studio.patch('appearance', { indicator: $event })"
+  ></div>
+  <button
+    studioToggle
+    label="Arrows"
+    [checked]="look().arrows"
+    (checkedChange)="studio.patch('appearance', { arrows: $event })"
+  ></button>
+  <button
+    studioToggle
+    label="Slide counter"
+    [checked]="look().counter"
+    (checkedChange)="studio.patch('appearance', { counter: $event })"
+  ></button>
+</section>
